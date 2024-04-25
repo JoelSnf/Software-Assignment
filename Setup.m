@@ -109,7 +109,7 @@ function [bodyList , goal, displayText] = Setup(LevelListBox)
             bodyList{size(bodyList,2)}.position = [5e8+3e8,5e8]';
             SetOrbitalSpeed(bodyList{1}, bodyList{size(bodyList,2)})
 
-            goal = Goal(LevelListBox,[5e8,5e8]',8000, 'Level 4');   
+            goal = Goal(LevelListBox,[5e8,5e8]',8000, 'Level 5');   
 
             displayText = "Okay, now its time to bring in other objects! You are orbiting earth, at a radius of 300 million km. I've taken half your fuel so that you must do roughly what a real spacecraft would do." + ...
                 "Your goal is to reduce the radius of your orbit." +newline+newline+ ...
