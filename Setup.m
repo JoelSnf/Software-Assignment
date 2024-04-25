@@ -141,11 +141,32 @@ function [bodyList , goal, displayText] = Setup(LevelListBox)
             displayText = "Can you manage a smaller orbit?"+newline+newline+"You might find it easier to gradually reduce your orbit's size" + ...
             " instead of doing it in only 2 burns like I suggested for level 3."+newline+newline+"Hot tip: burning prograde and retrograde has the most effect when you are"+...
             "travelling at minimum and maximum speed in your orbit. This is the same as the lowest (fastest) and highest (slowest) points in your orbit."+newline+newline+ ...
-            "Tip 2: To modify your orbit and keep it circular, you need to burn at the highest and lowest point. If you only do one side your orbit will be";
+            "Tip 2: To modify your orbit and keep it circular, you need to burn at the highest and lowest point. If you only do one side your orbit will be eliptical. "+...
+            "Another way to think about this is that you can't change the section of your orbit that you are at in that instant. (Unless you have a teleporter handy)";
 
-        
+        case "Level 5"
+            bodyList = {nan,nan};
+            for index = 1:size(bodyList,2)
+                bodyList{index} = PhysicsObject;
+            end
 
+            % da earth
+            bodyList{1}.setMass(6e24);  % I use setMass because it also updates the drawing size for the body
+            bodyList{1}.position = [5e8,5e8]';
+            bodyList{1}.positionFrozen = true;
+            bodyList{1}.colour = [0.1,0.7,0.1];
 
+            fuel = 50;            
+            bodyList{size(bodyList,2)} = Astronaut(fuel);
+            bodyList{size(bodyList,2)}.position = [5e8+3.5e7,5e8]';
+            SetOrbitalSpeed(bodyList{1}, bodyList{size(bodyList,2)})
+
+            goal = Goal(LevelListBox,[5e8,5e8]',58000, 'Level 5',true);   
+
+            displayText = "Ok, now you have the opposite goal. Make your orbit bigger!"+newline+newline+"Remember: Burning prograde and retrograde has the most effect when you are"+...
+                "travelling at minimum and maximum speed in your orbit. This is the same as the lowest (fastest) and highest (slowest) points in your orbit. "+...
+                "Because of this, it makes sense to burn prograde in little bursts, each time you are at the lowpoint (also known as periapsis by nerds) in your orbit."+newline+newline+...
+                "Don't worry about making your orbit circular for this one - just escape the area for a little while. I'm not sure if its possible to make a circular orbit on this level which doesn't go inside the goal area.";
 
         otherwise
             error("Couldn't find a level called "+ level);

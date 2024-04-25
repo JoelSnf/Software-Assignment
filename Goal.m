@@ -11,7 +11,7 @@ classdef Goal < handle
         progress = 0;
         progressSlowingFactor = 3200;
         
-        inverted = false; % Inverted = means the mission is to be *outside* of the goal area.
+        inverted {mustBeNumericOrLogical} = false; % Inverted = means the mission is to be *outside* of the goal area.
 
         marker="o";
         goalAlpha = 0.5;
@@ -60,11 +60,11 @@ classdef Goal < handle
 
             for i = 1:endIndex % check to see wether this level has been beaten already.
                 if string(obj.levelListBox.Items{i}) == string(obj.nextLevelName)
-                    %nextLevelIsAlreadyInList = true;
-                    obj.progress = inf;
-                    obj.colour = [0.30,0.75,0.93];
-                    obj.goalAlpha = 0.3;
-                    return
+                    nextLevelIsAlreadyInList = true;
+                    % obj.progress = inf;
+                    % obj.colour = [0.30,0.75,0.93];
+                    % obj.goalAlpha = 0.3;
+                    % return
                 end
             end
 
@@ -72,7 +72,7 @@ classdef Goal < handle
 
             goalRadius = 1.11e6 * obj.drawSize ^ 0.5; % Should be 1e8 when drawsize = 8000.
             
-            astronautInsideGoal = ( astronautPos - obj.position ) < goalRadius;
+            astronautInsideGoal = ( norm(astronautPos - obj.position) ) < goalRadius;
 
             if astronautInsideGoal ~= obj.inverted % Progress if the player is in the region they should be
                 obj.colour = obj.progressColour;
