@@ -11,7 +11,11 @@ classdef Goal < handle
         progress = 0;
         progressSlowingFactor = 3200;
         
-        inverted {mustBeNumericOrLogical} = false; % Inverted = means the mission is to be *outside* of the goal area.
+        % Inverted means the mission is to be *outside* of the goal area, instead of *inside*.
+        inverted {mustBeNumericOrLogical} = false; 
+
+        % physics object that the goal should track (Used for level 7, goal tracks the moon)
+        FollowObject;  
 
         marker="o";
         goalAlpha = 0.5;
@@ -21,21 +25,25 @@ classdef Goal < handle
     end
 
     methods
-        function obj = Goal(LevelListBox, position,drawSize, nextLevelName, Inverted ,Visible)
+        function obj = Goal(LevelListBox, position,drawSize, nextLevelName, Inverted, FollowObject ,Visible)
             arguments
                 LevelListBox
                 position
                 drawSize
                 nextLevelName
                 Inverted = false;
+                FollowObject = PhysicsObject() % Default to a stationary physics object.
                 Visible = true;
             end
+
+            mustBeA( FollowObject , 'PhysicsObject' )
 
             obj.levelListBox = LevelListBox;
             obj.position = position;
             obj.drawSize = drawSize;
             obj.nextLevelName = nextLevelName;
             obj.inverted = Inverted;
+            obj.FollowObject = FollowObject;
 
             if obj.inverted                
                 obj.defaultColour = [0.85,0.25,0.25];
@@ -51,6 +59,11 @@ classdef Goal < handle
         end
 
         function CheckIfAstronautNearby(obj, astronaut)
+
+            if norm(obj.FollowObject.position) ~= 0
+                obj.position = obj.FollowObject.position;
+            end
+
             if not(obj.Visible) || obj.progress == inf || astronaut.crashed 
                 return
             end 
@@ -79,7 +92,7 @@ classdef Goal < handle
                 obj.progress = obj.progress + 2 * (astronaut.dt / obj.progressSlowingFactor);
             else
                 obj.colour = obj.defaultColour;
-                obj.progress = obj.progress - 0.5 * (astronaut.dt / obj.progressSlowingFactor);
+                obj.progress = obj.progress - 3 * (astronaut.dt / obj.progressSlowingFactor);
             end
 
             if obj.progress > 100                
