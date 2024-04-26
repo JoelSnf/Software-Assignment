@@ -61,6 +61,7 @@ function [bodyList , goal, displayText] = Setup(LevelListBox)
             bodyList{size(bodyList,2)} = Astronaut();
 
             bodyList{1}.position = [5e8+2e8,5e8]';
+            bodyList{1}.velocity = [-1e3,1e3]';
 
             goal = Goal(LevelListBox,[5e8-2e8,5e8]',8000, 'Level 2');
             
@@ -84,6 +85,7 @@ function [bodyList , goal, displayText] = Setup(LevelListBox)
 
             bodyList{size(bodyList,2)} = Astronaut(fuel); 
             bodyList{size(bodyList,2)}.position = [5e8+4.5e8,5e8]';
+            bodyList{size(bodyList,2)}.velocity = [-1e3,1e3]';
 
             goal = Goal(LevelListBox,[5e8-2e8,5e8]',4000, 'Level 3');            
             
