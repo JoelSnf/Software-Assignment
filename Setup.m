@@ -18,7 +18,7 @@ function [bodyList , goal, displayText] = Setup(LevelListBox)
         
             bodyList{size(bodyList,2)} = Astronaut();
 
-            displayText = "Heres a little bonus - infinite fuel random level to mess around in. Thanks again for playing.";
+            displayText = "Heres a little bonus - infinite fuel random level to mess around in. Thanks again for playing :)";
 
         case "Intro"
             bodyList = {nan,nan,nan}; % earth, moon, cosmonaut ^^

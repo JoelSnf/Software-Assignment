@@ -7,7 +7,7 @@ function SetOrbitalSpeed(planet, satellite, clockwise)
     distanceVector = planet.position - satellite.position;
     rotationMatrix = [0 1; -1, 0]; % 90 degrees ccw
 
-    if clockwise;
+    if clockwise
         rotationMatrix = -rotationMatrix; % 90 degrees cw
     end
 
