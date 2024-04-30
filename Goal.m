@@ -11,7 +11,11 @@ classdef Goal < handle
         progress = 0;
         progressSlowingFactor = 3200;
         
-        inverted = false; % Inverted = means the mission is to be *outside* of the goal area.
+        % Inverted means the mission is to be *outside* of the goal area, instead of *inside*.
+        inverted {mustBeNumericOrLogical} = false; 
+
+        % physics object that the goal should track (Used for level 7, goal tracks the moon)
+        FollowObject;  
 
         marker="o";
         goalAlpha = 0.5;
@@ -21,21 +25,25 @@ classdef Goal < handle
     end
 
     methods
-        function obj = Goal(LevelListBox, position,drawSize, nextLevelName, Inverted ,Visible)
+        function obj = Goal(LevelListBox, position,drawSize, nextLevelName, Inverted, FollowObject ,Visible)
             arguments
                 LevelListBox
                 position
                 drawSize
                 nextLevelName
                 Inverted = false;
+                FollowObject = PhysicsObject() % Default to a stationary physics object.
                 Visible = true;
             end
+
+            mustBeA( FollowObject , 'PhysicsObject' )
 
             obj.levelListBox = LevelListBox;
             obj.position = position;
             obj.drawSize = drawSize;
             obj.nextLevelName = nextLevelName;
             obj.inverted = Inverted;
+            obj.FollowObject = FollowObject;
 
             if obj.inverted                
                 obj.defaultColour = [0.85,0.25,0.25];
@@ -51,6 +59,11 @@ classdef Goal < handle
         end
 
         function CheckIfAstronautNearby(obj, astronaut)
+
+            if norm(obj.FollowObject.position) ~= 0
+                obj.position = obj.FollowObject.position;
+            end
+
             if not(obj.Visible) || obj.progress == inf || astronaut.crashed 
                 return
             end 
@@ -60,11 +73,11 @@ classdef Goal < handle
 
             for i = 1:endIndex % check to see wether this level has been beaten already.
                 if string(obj.levelListBox.Items{i}) == string(obj.nextLevelName)
-                    %nextLevelIsAlreadyInList = true;
-                    obj.progress = inf;
-                    obj.colour = [0.30,0.75,0.93];
-                    obj.goalAlpha = 0.3;
-                    return
+                    nextLevelIsAlreadyInList = true;
+                    % obj.progress = inf;
+                    % obj.colour = [0.30,0.75,0.93];
+                    % obj.goalAlpha = 0.3;
+                    % return
                 end
             end
 
@@ -72,14 +85,14 @@ classdef Goal < handle
 
             goalRadius = 1.11e6 * obj.drawSize ^ 0.5; % Should be 1e8 when drawsize = 8000.
             
-            astronautInsideGoal = ( astronautPos - obj.position ) < goalRadius;
+            astronautInsideGoal = ( norm(astronautPos - obj.position) ) < goalRadius;
 
             if astronautInsideGoal ~= obj.inverted % Progress if the player is in the region they should be
                 obj.colour = obj.progressColour;
                 obj.progress = obj.progress + 2 * (astronaut.dt / obj.progressSlowingFactor);
             else
                 obj.colour = obj.defaultColour;
-                obj.progress = obj.progress - 0.5 * (astronaut.dt / obj.progressSlowingFactor);
+                obj.progress = obj.progress - 3 * (astronaut.dt / obj.progressSlowingFactor);
             end
 
             if obj.progress > 100                
